@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Balloon Archer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #3b82f6, #020617);
+      color: #f9fafb;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(15,23,42,0.97);
+      border-radius: 20px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.8);
+      padding: 12px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: flex;
+      gap: 6px;
+      font-size: 11px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.25);
+    }
+
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      margin-top: 6px;
+      touch-action: manipulation;
+    }
+
+    .footer-text {
+      font-size: 12px;
+      margin-top: 4px;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .overlay-panel {
+      background: #020617;
+      padding: 18px 16px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+      text-align: center;
+    }
+
+    .overlay-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .overlay-text {
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .btn-primary {
+      background: #22c55e;
+      color: #022c22;
+    }
+
+    .btn-secondary {
+      background: #3b82f6;
+      color: #eff6ff;
+    }
+
+    .btn-danger {
+      background: #f97316;
+      color: #111827;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="header">
+      <div class="title">🎯 Balloon Archer</div>
+      <div class="stats">
+        <div class="badge">M: <span id="uiWorld">1</span></div>
+        <div class="badge">Lv: <span id="uiLevel">1</span></div>
+        <div class="badge">🎯 <span id="uiBalloons">0</span></div>
+        <div class="badge">🏹 <span id="uiArrows">0</span></div>
+        <div class="badge">⏱ <span id="uiTime">--</span>s</div>
+      </div>
+    </div>
+
+    <canvas id="gameCanvas" width="360" height="560"></canvas>
+
+    <div class="footer-text">
+      Tieni premuto per sparare a raffica. Rompi tutti i bersagli prima che scada il tempo!
+    </div>
+  </div>
+
+  <!-- Overlay menu / messaggi -->
+  <div id="overlay">
+    <div class="overlay-panel">
+      <div class="overlay-title" id="overlayTitle">Balloon Archer</div>
+      <div class="overlay-text" id="overlayText">
+        Benvenuto! Rompi i bersagli usando il tuo arco mitra 🏹<br>
+        Progresso e stelle vengono salvati sul dispositivo.
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="btnPlay">Gioca</button>
+        <button class="btn-secondary" id="btnLevelSelect">Nuova partita</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="popSound" src="pop.mp3" preload="auto"></audio>
+  <audio id="bgMusic" src="bgmusic.mp3" preload="auto" loop></audio>
+
+  <script src="levels.js"></script>
+  <script src="game.js"></script>
+
+  <!-- Registrazione Service Worker per PWA -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .catch((err) => {
+            console.log("SW registration failed", err);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
